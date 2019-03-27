@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import *
+from tkinter import filedialog as fd
 
 
 def quit(ev):
@@ -15,11 +16,15 @@ def encode_vienera(ev):
     if len(key) < len(text):
         for i in range(key_len, len(text) - 1):
             key += key[i - key_len]
-    print(key.upper())
 
     result = ''
     for i in range(0, len(text) - 1):
         old_ord = ord(text[i])
+
+        if old_ord == ord(' '):
+            result += ' '
+            continue
+
         old_ord -= 97
         key_ord = ord(key[i])
         key_ord -= 97
@@ -38,6 +43,11 @@ def encode_caesar(ev):
     result = ''
     for char in text:
         old_ord = ord(char)
+
+        if old_ord == ord(' '):
+            result += ' '
+            continue
+
         old_ord -= 97
         if 0 <= old_ord <= 25:
             encoded_ord = (old_ord + offset) % 26
@@ -46,6 +56,29 @@ def encode_caesar(ev):
 
     textbox.delete(1.0, END)
     textbox.insert(1.0, result.upper())
+
+
+def open_from_file():
+    file_name = fd.askopenfilename()
+    if file_name == '':
+        return
+    f = open(file_name)
+    s = f.read()
+    textbox.delete(1.0, END)
+    textbox.insert(1.0, s)
+    f.close()
+
+
+def save_to_file():
+    file_name = fd.asksaveasfilename(filetypes=(("TXT files", "*.txt"),
+                                                ("HTML files", "*.html;*.htm"),
+                                                ("All files", "*.*")))
+    if file_name == '':
+        return
+    f = open(file_name, 'w')
+    s = textbox.get(1.0, END)
+    f.write(s)
+    f.close()
 
 
 root = tkinter.Tk()
@@ -94,4 +127,11 @@ button_encrypt_caesar.bind("<Button-1>", encode_caesar)
 button_encrypt_vienera.bind("<Button-1>", encode_vienera)
 quit_btn.bind("<Button-1>", quit)
 
+menu_bar = Menu(root)
+file_menu = Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Open", command=open_from_file)
+file_menu.add_command(label="Save", command=save_to_file)
+menu_bar.add_cascade(label="File", menu=file_menu)
+
+root.config(menu=menu_bar)
 root.mainloop()
