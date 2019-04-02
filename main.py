@@ -24,6 +24,9 @@ def encode_vienera(ev):
         if old_ord == ord(' '):
             result += ' '
             continue
+        elif ord('0') <= old_ord <= ord('9'):
+            result += text[i]
+            continue
 
         old_ord -= 97
         key_ord = ord(key[i])
@@ -46,6 +49,9 @@ def encode_caesar(ev):
 
         if old_ord == ord(' '):
             result += ' '
+            continue
+        elif ord('0') <= old_ord <= ord('9'):
+            result += text[i]
             continue
 
         old_ord -= 97
